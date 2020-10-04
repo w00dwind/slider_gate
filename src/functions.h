@@ -41,6 +41,8 @@ void printOutput(String a) {
 }
 
 
+
+
 /*
   formatTime() - Format millis in to MM:SS
 */
@@ -56,4 +58,19 @@ String formatTime(long milliSeconds) {
   if (mins) returned += mins + String("m ");
   returned += secs_o + secs + String("s");
   return returned;
+}
+
+// Notify
+void sendNotification() {
+  if (notifyDelay && !notificationSent) {
+    Blynk.notify("Внимание, ворота были открыты: \n" + String(GateLastOpened) + String("\n\nВорота открыты уже: ") + formatTime(GateSwitchMillisHeld));
+    printOutput(String("Notified # Gate Held: ") + formatTime(GateSwitchMillisHeld));
+    notificationSent = 1;
+    timer3 = timer.setTimeout(((notifyDelay * 1000) - 1000), []() {
+      notificationSent = 0;
+      printOutput("Notified # Reset Flag");
+    });
+    //Blynk.sms("Alert! " + GateLastOpened + String(" // Front Gate has been left open for ") + formatTime(GateSwitchMillisHeld);
+    //Blynk.notify("NOTIFY: Alert, Front Gate has been left open!");
+  }
 }

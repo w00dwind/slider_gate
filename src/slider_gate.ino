@@ -11,21 +11,27 @@
 #include <WidgetRTC.h>
 #include "settings.h"
 #include "secret.h"
-#include "globals.h"
 #include "functions.h"
 
 
 BLYNK_WRITE(vPIN_GATE_COUNTER) {
   GateDailyCounter = param.asInt();
 }
+BLYNK_WRITE(vPIN_TABLE_COUNTER) {
+  tableIndex1 = param.asInt();
+}
 
 BLYNK_WRITE(vPIN_GATE_TABLE_CLR) {
   if (param.asInt()) {
     Blynk.virtualWrite(vPIN_GATE_TABLE, "clr" );
-    printOutput("Front Gate Table Cleared");
+    printOutput("Gate Table Cleared");
   }
 }
 
+BLYNK_WRITE(vPIN_NOTIFY_DELAY) {
+  notifyDelay = param.asInt() * 60;
+  (notifyDelay) ? printOutput(String("Notify Delay: ") + String(param.asInt()) + String(" min")) : printOutput(String("Notify Disabled "));
+}
 
 // relay
 
@@ -71,10 +77,11 @@ void OpenedGate ()
     GateLastOpened = getCurrentDate() + String("   ") + getCurrentTime();
     Blynk.virtualWrite(vPIN_GATE_LAST, GateLastOpened);
     // INDICATOR COLOUR
-    Blynk.setProperty(vPIN_GATE_HELD, "color", "#23C48E");
+    Blynk.setProperty(vPIN_GATE_HELD, "color", "#ED9D00");
     // DAILY COUNTER
     GateDailyCounter++;
     Blynk.virtualWrite(vPIN_GATE_COUNTER, GateDailyCounter);
+
     // START TIMER
     timer.enable(timer2);
     // TERMINAL
@@ -85,38 +92,24 @@ void OpenedGate ()
 
     if (GateSwitchCurrent == LOW && GateSwitchPrev == HIGH) {
     // INDICATOR COLOUR
-    Blynk.setProperty(vPIN_GATE_HELD, "color", "#ED9D00");
+    Blynk.setProperty(vPIN_GATE_HELD, "color", "#23C48E");
     // STOP ACTIVE GATE TIMER
     timer.disable(timer2);
     //notificationSent = 0;
     // TABLE
     Blynk.virtualWrite(vPIN_GATE_TABLE, "add", tableIndex1, GateLastOpened, formatTime(GateSwitchMillisHeld) );
     Blynk.virtualWrite(vPIN_GATE_TABLE, "pick", tableIndex1 );
-    //Blynk.virtualWrite(vPIN_GATE_TABLE, "select", tableIndex1 );
-    if (tableIndex1 > 1) Blynk.virtualWrite(vPIN_GATE_TABLE, "deselect", (tableIndex1 -1));
-    lcd.clear();
-    lcd.print(4,0, tableIndex1);
+
     tableIndex1++;
+    //Table counter
+    Blynk.virtualWrite(vPIN_TABLE_COUNTER, tableIndex1);
     // TERMINAL
     printOutput(String("Gate Closed << Time: ") + formatTime(GateSwitchMillisHeld));
     }
   GateSwitchPrev = GateSwitchCurrent;
 }
 
-
-// test terminal button state
-BLYNK_WRITE(V20)
-{
-
-  int pinValue20 = param.asInt();
-  if(pinValue20 == 1) {
-    printOutput("test button pushed");
-  }
-  terminal.flush();
-}
-
-void setup() //основная функция, выполняется один раз при подаче питания на микроконтроллер
-{
+void setup() {//основная функция, выполняется один раз при подаче питания на микроконтроллер
 
   Serial.begin(9600); //открываем серийный порт
 
@@ -131,15 +124,6 @@ void setup() //основная функция, выполняется один 
     delay(5000);
     ESP.restart();
   }
-
-
-
-
-    // Display digital clock every 10 seconds
-  //timer.setInterval(10000L, clockDisplay);
-
-
-// !!!!
   ArduinoOTA.onError([](ota_error_t error) {
     ESP.restart();
   });
@@ -169,7 +153,7 @@ void setup() //основная функция, выполняется один 
   });
   timer2 = timer.setInterval(1000, []() {
     Blynk.virtualWrite(vPIN_GATE_HELD, formatTime(GateSwitchMillisHeld));
-    //if (GateSwitchSecsHeld > 0 && GateSwitchSecsHeld >= notifyDelay) sendNotification();
+    if (GateSwitchSecsHeld > 0 && GateSwitchSecsHeld >= notifyDelay) sendNotification();
   });
   timer.disable(timer2);
 
@@ -177,7 +161,8 @@ void setup() //основная функция, выполняется один 
     if (year() != 1970) {
       today = day();
       Blynk.syncVirtual(vPIN_GATE_COUNTER);
-      setSyncInterval(300);
+      Blynk.syncVirtual(vPIN_TABLE_COUNTER);
+      setSyncInterval(5 * 60);
       printOutput("Sync'd RTC - Interval: 5min");
       timer.disable(timer3);
       timer.setInterval(15 * 60 * 1000, []() {

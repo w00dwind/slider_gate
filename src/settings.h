@@ -33,6 +33,8 @@
 #define vPIN_GATE_HELD              V14
 #define vPIN_GATE_COUNTER           V12
 
+#define vPIN_TABLE_COUNTER          V16
+#define vPIN_NOTIFY_DELAY           V17
 
 /**************************************************************
 
@@ -47,7 +49,7 @@ WidgetTerminal terminal(vPIN_TERMINAL);
 
 int timer1, timer2, timer3;
 BlynkTimer timer;
-int today;
+int today = 6;
 
 String GateLastOpened;
 int           DoorBellButtonCur, GateSwitchCurrent, notificationSent;
@@ -55,6 +57,6 @@ long          GateSwitchMillisHeld, GateSwitchSecsHeld, notifyDelay;
 unsigned long GateSwitchFirstTime;       // how long since the button was first pressed
 byte          GateSwitchPrev = LOW;
 
-int GateDailyCounter;
+int GateDailyCounter, tableIndex1;
 
-int           tableIndex1 = 0, tableIndex2 = 0;
+int           tableIndex2 = 0;
