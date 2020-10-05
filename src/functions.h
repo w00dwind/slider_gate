@@ -48,7 +48,7 @@ void printOutput(String a) {
 */
 String formatTime(long milliSeconds) {
   long hours = 0, mins = 0, secs = 0;
-  String returned, secs_o, mins_o;
+  String returned, secs_o, mins_o, hours_o;
   secs = milliSeconds / 1000;
   mins = secs / 60;
   hours = mins / 60;
@@ -56,6 +56,7 @@ String formatTime(long milliSeconds) {
   mins = mins - (hours * 60);
   if (secs < 10 && mins) secs_o = "0";
   if (mins) returned += mins + String("m ");
+
   returned += secs_o + secs + String("s");
   return returned;
 }

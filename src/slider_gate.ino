@@ -1,4 +1,5 @@
 
+#define BLYNK_PRINT Serial
 
 #include <ESP8266WiFi.h>
 #include <ArduinoOTA.h>
@@ -24,6 +25,7 @@ BLYNK_WRITE(vPIN_TABLE_COUNTER) {
 BLYNK_WRITE(vPIN_GATE_TABLE_CLR) {
   if (param.asInt()) {
     Blynk.virtualWrite(vPIN_GATE_TABLE, "clr" );
+    Blynk.virtualWrite(vPIN_TABLE_COUNTER, 0);
     printOutput("Gate Table Cleared");
   }
 }
@@ -146,6 +148,7 @@ void setup() {//основная функция, выполняется один
 //  timer
   timer.setInterval(2000L, OpenedGate);
   timer.setInterval(30000L, sendUptime);
+
   //timer.setInterval(30000L, clockDisplay);
   timer1 = timer.setInterval(2000, []() {
     Blynk.virtualWrite(vPIN_CUR_DATE,  getCurrentDate() + String("  ") + getCurrentTime() );
