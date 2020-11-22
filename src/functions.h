@@ -64,7 +64,7 @@ String formatTime(long milliSeconds) {
 // Notify
 void sendNotification() {
   if (notifyDelay && !notificationSent) {
-    Blynk.notify("Внимание, ворота были открыты: \n" + String(GateLastOpened) + String("\n\nВорота открыты уже: ") + formatTime(GateSwitchMillisHeld));
+    Blynk.notify(String("Внимание ! Ворота открыты уже: \n") + formatTime(GateSwitchMillisHeld) + "\n _____________\n\n\nВорота были открыты: \n" + String(GateLastOpened));
     printOutput(String("Notified # Gate Held: ") + formatTime(GateSwitchMillisHeld));
     notificationSent = 1;
     timer3 = timer.setTimeout(((notifyDelay * 1000) - 1000), []() {

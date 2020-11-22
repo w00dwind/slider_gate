@@ -1,7 +1,7 @@
 
 //
-#define DEBUG_MODE 1  // if enable - debug token
-#define LOCATION 1     // 1 =  Chistova.st ; 2 = Svyatoozerskaya; 3 = Shatura
+#define DEBUG_MODE 0  // if enable - debug token
+#define LOCATION 1     // 1 =  Shatura ; 2 = Svyatoozerskaya; 3 = Chistova
 //
 
 /**************************************************************
@@ -41,15 +41,23 @@
                             Globals
 
  **************************************************************/
+
+
+
 WidgetRTC rtc;
 WidgetLCD lcd(vPIN_LCD);
 WidgetTerminal terminal(vPIN_TERMINAL);
 
+// Blynk LED
+WidgetLED led1(V19);
+#define vPIN_LED        V19
+#define BLYNK_GREEN     "#23C48E"
+#define BLYNK_RED       "#D3435C"
 
 
 int timer1, timer2, timer3;
 BlynkTimer timer;
-int today = 6;
+int today = 0;
 
 String GateLastOpened;
 int           DoorBellButtonCur, GateSwitchCurrent, notificationSent;
