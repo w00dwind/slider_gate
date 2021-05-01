@@ -10,7 +10,7 @@
 
  **************************************************************/
  // ESP pins
- #define PIN_MAGNET D7   // Physical  pin to a3144 sensor
+ #define PIN_MAGNET D2   // Physical  pin to a3144 sensor
  #define PIN_RELAY1 D6    // Physical  pin to Relay for full open
  #define PIN_RELAY2 D5   // Physical  pin to Relay short open
 
