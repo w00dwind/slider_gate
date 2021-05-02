@@ -71,10 +71,15 @@ void OpenedGate ()
 {
 
   int GateSwitchCurrent = digitalRead(PIN_MAGNET);
-  //Serial.print("Hall sensor state: ");Serial.println(garageSensorSW); // отображение статуса датчика хола в serial порт, для отладки.
+  // Serial.print("Hall sensor state: ");
+  // Serial.println(GateSwitchCurrent); // отображение статуса датчика хола в serial порт, для отладки.
+
+
+
   if (GateSwitchCurrent == HIGH && GateSwitchPrev == LOW) {
-    //lcd.clear();
-    //lcd.print(2, 0, "Ворота открыты"); // LCD print, column 2, row 0.
+    //test
+    digitalWrite(LED_BUILTIN, HIGH);
+
     GateSwitchFirstTime = millis();
     // LOG WHEN
     GateLastOpened = getCurrentDate() + String("   ") + getCurrentTime();
@@ -95,6 +100,9 @@ void OpenedGate ()
     GateSwitchSecsHeld = GateSwitchMillisHeld / 1000;
 
     if (GateSwitchCurrent == LOW && GateSwitchPrev == HIGH) {
+      //testing
+      digitalWrite(LED_BUILTIN, LOW);
+      //
     // INDICATOR COLOUR
     Blynk.setProperty(vPIN_GATE_HELD, "color", "#23C48E");
 
@@ -143,8 +151,12 @@ void setup() {   //основная функция, выполняется од�
   // Pin mode, bootstate
   pinMode(PIN_RELAY1, OUTPUT); //объявляем D4 "выходным" пином
   pinMode(PIN_RELAY2, OUTPUT);
-  pinMode(PIN_MAGNET, INPUT_PULLUP);
-  //digitalWrite(PIN_MAGNET, LOW);  // CHECK IT
+  pinMode(PIN_MAGNET, INPUT);
+
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+
+
   digitalWrite(PIN_RELAY1, HIGH);
   digitalWrite(PIN_RELAY2, HIGH);
 
