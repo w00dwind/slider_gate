@@ -1,18 +1,22 @@
 
 //
-#define DEBUG_MODE 0  // if enable - debug token
+#define DEBUG_MODE 0  // if enable - debug token; hall sensor value print to terminal
 #define LOCATION 1     // 1 =  Shatura ; 2 = Svyatoozerskaya; 3 = Chistova
 //
+int MIN_THRESHOLD = 525;
+int MAX_THRESHOLD = 560;
 
+bool f_opened_notyfy;
 /**************************************************************
 
                             Pins
 
  **************************************************************/
  // ESP pins
- #define PIN_MAGNET                 D1   // Physical  pin to a3144 sensor
- #define PIN_RELAY1                 D6    // Physical  pin to Relay for full open
- #define PIN_RELAY2                 D5   // Physical  pin to Relay short open
+ #define HALL_SENSOR                A0   // Physical  pin to hall sensor
+
+ #define PIN_RELAY1                 D5    // Physical  pin to Relay for full open
+ #define PIN_RELAY2                 D6   // Physical  pin to Relay short open
 
 // Virtual pins
 #define vPIN_TERMINAL               V21
@@ -59,11 +63,11 @@ int timer1, timer2, timer3;
 BlynkTimer timer;
 int today = 0;
 
-String GateLastOpened;
-int           DoorBellButtonCur, GateSwitchCurrent, notificationSent;
+String        GateLastOpened;
+int           GateSwitchCurrent, notificationSent;
 long          GateSwitchMillisHeld, GateSwitchSecsHeld, notifyDelay;
 unsigned long GateSwitchFirstTime;       // how long since the button was first pressed
-byte          GateSwitchPrev = LOW;
+int           GateSwitchPrev;
 
 int GateDailyCounter, tableIndex1;
 

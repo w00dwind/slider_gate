@@ -15,6 +15,7 @@
 #include "functions.h"
 
 
+
 BLYNK_WRITE(vPIN_GATE_COUNTER) {
   GateDailyCounter = param.asInt();
 }
@@ -70,15 +71,22 @@ BLYNK_WRITE(vPIN_RELAY2) //функция, отслеживающая измен
 void OpenedGate ()
 {
 
-  int GateSwitchCurrent = digitalRead(PIN_MAGNET);
-  // Serial.print("Hall sensor state: ");
-  // Serial.println(GateSwitchCurrent); // отображение статуса датчика хола в serial порт, для отладки.
+  int GateSwitchCurrent = analogRead(HALL_SENSOR);
+  #if (DEBUG_MODE)
+  printOutput(String("Hall sensor state: ") + GateSwitchCurrent);  // отображение статуса датчика хола в terminal для отладки.
+  #endif
 
+  if (GateSwitchCurrent > MAX_THRESHOLD && f_opened_notyfy == false) {
+    printOutput(String("Gate Opened >> Time: ") + formatTime(GateSwitchMillisHeld));
+    f_opened_notyfy = true;
+  }
 
+  if (GateSwitchCurrent > MIN_THRESHOLD && GateSwitchPrev < MIN_THRESHOLD)
+   {
 
-  if (GateSwitchCurrent == HIGH && GateSwitchPrev == LOW) {
-    //test
-    digitalWrite(LED_BUILTIN, HIGH);
+    #if (DEBUG_MODE)
+    Serial.println(">>>Gate opened");
+    #endif
 
     GateSwitchFirstTime = millis();
     // LOG WHEN
@@ -99,10 +107,13 @@ void OpenedGate ()
     GateSwitchMillisHeld = (millis() - GateSwitchFirstTime);
     GateSwitchSecsHeld = GateSwitchMillisHeld / 1000;
 
-    if (GateSwitchCurrent == LOW && GateSwitchPrev == HIGH) {
-      //testing
-      digitalWrite(LED_BUILTIN, LOW);
-      //
+    if (GateSwitchCurrent < MIN_THRESHOLD && GateSwitchPrev > MIN_THRESHOLD) {
+      // reset full opened gate flag
+
+      #if (DEBUG_MODE)
+      Serial.println(">>>Gate closed");
+      #endif
+
     // INDICATOR COLOUR
     Blynk.setProperty(vPIN_GATE_HELD, "color", "#23C48E");
 
@@ -120,6 +131,7 @@ void OpenedGate ()
     printOutput(String("Gate Closed << Time: ") + formatTime(GateSwitchMillisHeld));
 
     }
+
   GateSwitchPrev = GateSwitchCurrent;
 }
 
@@ -151,10 +163,10 @@ void setup() {   //основная функция, выполняется од�
   // Pin mode, bootstate
   pinMode(PIN_RELAY1, OUTPUT); //объявляем D4 "выходным" пином
   pinMode(PIN_RELAY2, OUTPUT);
-  pinMode(PIN_MAGNET, INPUT);
+  pinMode(HALL_SENSOR, INPUT);
 
-  pinMode(LED_BUILTIN, OUTPUT);
-  digitalWrite(LED_BUILTIN, LOW);
+
+
 
 
   digitalWrite(PIN_RELAY1, HIGH);

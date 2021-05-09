@@ -73,7 +73,7 @@
 -I/Users/ac1d/Documents/Arduino/libraries/packages
 -I/Users/ac1d/Documents/Arduino/libraries/platforms
 -I/Users/ac1d/Documents/Arduino/libraries/pubsubclient/src
--I/Users/ac1d/.platformio/lib/Blynk_ID415/src
+-I/Users/ac1d/.platformio/lib/Blynk/src
 -I/Users/ac1d/.platformio/lib/EspSoftwareSerial/src
 -I/Users/ac1d/.platformio/packages/framework-arduinoespressif8266/libraries/DNSServer/src
 -I/Users/ac1d/.platformio/packages/framework-arduinoespressif8266/libraries/EEPROM
