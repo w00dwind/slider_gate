@@ -109,6 +109,7 @@ void OpenedGate ()
 
     if (GateSwitchCurrent < MIN_THRESHOLD && GateSwitchPrev > MIN_THRESHOLD) {
       // reset full opened gate flag
+      f_opened_notyfy = false;
 
       #if (DEBUG_MODE)
       Serial.println(">>>Gate closed");

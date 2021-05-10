@@ -69,6 +69,6 @@ long          GateSwitchMillisHeld, GateSwitchSecsHeld, notifyDelay;
 unsigned long GateSwitchFirstTime;       // how long since the button was first pressed
 int           GateSwitchPrev;
 
-int GateDailyCounter, tableIndex1;
+int           GateDailyCounter, tableIndex1;
 
 int           tableIndex2 = 0;
