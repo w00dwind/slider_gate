@@ -1,4 +1,9 @@
-.pio
+.pio/*
+/include/
+/lib/
+/test/
 .clang_complete
 .gcc-flags.json
 /src/secret.h
+.DS_Store
+.gitignore
