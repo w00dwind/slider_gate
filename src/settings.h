@@ -2,6 +2,7 @@
 //
 #define DEBUG_MODE 0  // if enable - debug token; hall sensor value print to terminal
 #define LOCATION 1     // 1 =  Shatura ; 2 = Svyatoozerskaya; 3 = Chistova
+#define SERVER IPAddress(88,210,13,30) 
 //
 int MIN_THRESHOLD = 525;
 int MAX_THRESHOLD = 560;
@@ -29,7 +30,7 @@ bool f_opened_notyfy;
 #define vPIN_RELAY2                 V2   // short open gate
 
 
-#define vPIN_TEST_BTN               V20
+// #define vPIN_TEST_BTN               V20
 
 #define vPIN_GATE_TABLE_CLR         V13
 #define vPIN_GATE_TABLE             V23

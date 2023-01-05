@@ -157,7 +157,10 @@ void setup() {   //основная функция, выполняется од�
   ArduinoOTA.setHostname(esp_hostname); // !!!!
   ArduinoOTA.begin();
 
-  Blynk.begin(auth, ssid, pass);
+  // Blynk.begin(auth, ssid, pass, "88.210.13.30"), 8080);
+
+  Blynk.begin(auth, ssid, pass, SERVER, 8080);
+
 
 
 
@@ -214,7 +217,8 @@ void setup() {   //основная функция, выполняется од�
 
 void loop()
 {
+  ArduinoOTA.handle();
   timer.run();
   Blynk.run();
-  ArduinoOTA.handle();
+
 }
