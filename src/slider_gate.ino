@@ -115,7 +115,7 @@ void OpenedGate ()
       Serial.println(">>>Gate closed");
       #endif
 
-    // INDICATOR COLOUR
+    // INDICATOR COLOR
     Blynk.setProperty(vPIN_GATE_HELD, "color", "#23C48E");
 
     // STOP ACTIVE GATE TIMER
@@ -159,7 +159,9 @@ void setup() {   //основная функция, выполняется од�
 
   // Blynk.begin(auth, ssid, pass, "88.210.13.30"), 8080);
 
-  Blynk.begin(auth, ssid, pass, SERVER, 8080);
+  // Blynk.begin(auth, ssid, pass, SERVER, 8080);
+  Blynk.config(auth, SERVER, 8080);
+  Blynk.connect(3333);
 
 
 

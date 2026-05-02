@@ -5,5 +5,5 @@
 .clang_complete
 .gcc-flags.json
 /src/secret.h
-.DS_Store
+.DS_Store*
 /src/.DS_Store
