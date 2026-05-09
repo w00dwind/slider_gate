@@ -26,9 +26,9 @@ void sendUptime ()
   Blynk.virtualWrite(vPIN_UPTIME,  uptime_format);
 }
 BLYNK_CONNECTED() {
-  // Synchronize time on connection
   rtc.begin();
-  setSyncInterval(10 * 60); // Sync interval in seconds (10 minutes)
+  setSyncInterval(10 * 60);
+  Blynk.virtualWrite(vPIN_GATE_STATE, analogRead(HALL_SENSOR) > MIN_THRESHOLD ? 1 : 0);
 }
 
 /*
@@ -54,8 +54,10 @@ String formatTime(long milliSeconds) {
   hours = mins / 60;
   secs = secs - (mins * 60);
   mins = mins - (hours * 60);
-  if (secs < 10 && mins) secs_o = "0";
-  if (mins) returned += mins + String("m ");
+  if (hours) returned += hours + String("h ");
+  if (secs < 10 && (mins || hours)) secs_o = "0";
+  if (mins < 10 && hours) mins_o = "0";
+  if (mins || hours) returned += mins_o + mins + String("m ");
 
   returned += secs_o + secs + String("s");
   return returned;
@@ -67,7 +69,7 @@ void sendNotification() {
     Blynk.notify(String("Внимание ! Ворота открыты уже: \n") + formatTime(GateSwitchMillisHeld) + "\n _____________\n\n\nВорота были открыты: \n" + String(GateLastOpened));
     printOutput(String("Notified # Gate Held: ") + formatTime(GateSwitchMillisHeld));
     notificationSent = 1;
-    timer3 = timer.setTimeout(((notifyDelay * 1000) - 1000), []() {
+    timerNotify = timer.setTimeout(((notifyDelay * 1000) - 1000), []() {
       notificationSent = 0;
       printOutput("Notified # Reset Flag");
     });

@@ -72,6 +72,7 @@ void OpenedGate ()
 {
 
   int GateSwitchCurrent = analogRead(HALL_SENSOR);
+  
   #if (DEBUG_MODE)
   printOutput(String("Hall sensor state: ") + GateSwitchCurrent);  // отображение статуса датчика хола в terminal для отладки.
   #endif
@@ -79,6 +80,9 @@ void OpenedGate ()
   if (GateSwitchCurrent > MAX_THRESHOLD && f_opened_notyfy == false) {
     printOutput(String("Gate Opened >> Time: ") + formatTime(GateSwitchMillisHeld));
     f_opened_notyfy = true;
+    
+    // testing gate_state
+    Blynk.virtualWrite(vPIN_GATE_STATE, 1);
   }
 
   if (GateSwitchCurrent > MIN_THRESHOLD && GateSwitchPrev < MIN_THRESHOLD)
@@ -103,6 +107,8 @@ void OpenedGate ()
     timer.enable(timer2);
     // TERMINAL
     printOutput("Gate Opened >>");
+    // 
+    Blynk.virtualWrite(vPIN_GATE_STATE, 1);
     }
     GateSwitchMillisHeld = (millis() - GateSwitchFirstTime);
     GateSwitchSecsHeld = GateSwitchMillisHeld / 1000;
@@ -130,7 +136,8 @@ void OpenedGate ()
 
     // TERMINAL
     printOutput(String("Gate Closed << Time: ") + formatTime(GateSwitchMillisHeld));
-
+    // gate state testing
+    Blynk.virtualWrite(vPIN_GATE_STATE, 0);
     }
 
   GateSwitchPrev = GateSwitchCurrent;
@@ -172,11 +179,9 @@ void setup() {   //основная функция, выполняется од�
   pinMode(HALL_SENSOR, INPUT);
 
 
-
-
-
   digitalWrite(PIN_RELAY1, HIGH);
   digitalWrite(PIN_RELAY2, HIGH);
+
 
   led1.setColor(BLYNK_RED);
 
@@ -213,6 +218,16 @@ void setup() {   //основная функция, выполняется од�
 
   /******** SYNC **************/
   Blynk.syncVirtual(vPIN_NOTIFY_DELAY);
+
+  // Initialize gate state from sensor on boot
+  int initSensor = analogRead(HALL_SENSOR);
+  GateSwitchPrev = initSensor;
+  if (initSensor > MIN_THRESHOLD) {
+    GateSwitchFirstTime = millis();
+    f_opened_notyfy = (initSensor > MAX_THRESHOLD);
+    timer.enable(timer2);
+  }
+  Blynk.virtualWrite(vPIN_GATE_STATE, initSensor > MIN_THRESHOLD ? 1 : 0);
 }
 
 

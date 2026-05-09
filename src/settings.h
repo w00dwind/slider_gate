@@ -14,15 +14,18 @@ bool f_opened_notyfy;
 
  **************************************************************/
  // ESP pins
- #define HALL_SENSOR                A0   // Physical  pin to hall sensor
+#define HALL_SENSOR                A0   // Physical  pin to hall sensor
+#define vPIN_GATE_STATE            V10  // Send analog to virtual for API read
 
- #define PIN_RELAY1                 D5    // Physical  pin to Relay for full open
- #define PIN_RELAY2                 D6   // Physical  pin to Relay short open
+#define PIN_RELAY1                 D5    // Physical  pin to Relay for full open
+#define PIN_RELAY2                 D6   // Physical  pin to Relay short open
 
 // Virtual pins
 #define vPIN_TERMINAL               V21
 #define vPIN_CUR_DATE               V8
 #define vPIN_LCD                    V3
+
+
 
 #define vPIN_UPTIME                 V5     // uptime pin
 //#define BL_RSSI V6      // signal strength pin
@@ -60,7 +63,7 @@ WidgetLED led1(V19);
 #define BLYNK_RED       "#D3435C"
 
 
-int timer1, timer2, timer3;
+int timer1, timer2, timer3, timerNotify;
 BlynkTimer timer;
 int today = 0;
 
